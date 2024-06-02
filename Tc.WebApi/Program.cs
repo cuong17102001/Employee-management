@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Tc.ServerLibrary.Data;
+using Tc.ServerLibrary.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection") 
         ?? throw new InvalidOperationException("Connection not found!"));
 });
+
+builder.Services.Configure<JwtSection>(builder.Configuration.GetSection("JwtSection"));
 
 var app = builder.Build();
 
