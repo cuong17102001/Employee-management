@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using Tc.ServerLibrary.Repositories.Contracts;
 
 namespace Tc.ServerLibrary.Repositories.Implementations
 {
-    internal class UserAccountRepository(IOptions<JwtSection> config, AppDbContext appDbContext) : IUserAccount
+    public class UserAccountRepository(IOptions<JwtSection> config, AppDbContext appDbContext) : IUserAccount
 
     {
         public async Task<GeneralResponse> CreateAsync(Register user)
@@ -36,6 +37,27 @@ namespace Tc.ServerLibrary.Repositories.Implementations
                 Fullname = user.Fullname,
                 Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
             });
+
+            var checkAdminRole = await appDbContext.SystemRoles.FirstOrDefaultAsync(_ => _.Name!.Equals(Constants.Admin));
+            if (checkAdminRole is null)
+            {
+                var createAdminRole = await AddToDatabase(new SystemRole { Name = Constants.Admin });
+                await AddToDatabase(new UserRole { RoleId = createAdminRole.Id , UserId = applicationUser.Id});
+                return new GeneralResponse(true, "Account created!");
+            }
+
+            var checkUserRole = await appDbContext.SystemRoles.FirstOrDefaultAsync(_ => _.Name!.Equals(Constants.User));
+            SystemRole response = new();
+            if (checkUserRole is null)
+            {
+                response = await AddToDatabase(new SystemRole { Name = Constants.User });
+                await AddToDatabase(new UserRole { RoleId = response.Id, UserId = applicationUser.Id });
+            }
+            else
+            {
+                await AddToDatabase(new UserRole { RoleId = checkUserRole.Id, UserId = applicationUser.Id });
+            }
+            return new GeneralResponse(true, "Account created!");
         }
 
         private async Task<T> AddToDatabase<T>(T model)

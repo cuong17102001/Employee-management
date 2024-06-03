@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Tc.ServerLibrary.Data;
 using Tc.ServerLibrary.Helpers;
+using Tc.ServerLibrary.Repositories.Contracts;
+using Tc.ServerLibrary.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.Configure<JwtSection>(builder.Configuration.GetSection("JwtSection"));
+builder.Services.AddScoped<IUserAccount, UserAccountRepository>();
 
 var app = builder.Build();
 

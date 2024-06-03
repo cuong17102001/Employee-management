@@ -8,11 +8,11 @@ using Tc.ServerLibrary.Data;
 
 #nullable disable
 
-namespace Tc.ServerLibrary.data.migrations
+namespace Tc.ServerLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240515165338_First")]
-    partial class First
+    [Migration("20240603163854_AddTables")]
+    partial class AddTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace Tc.ServerLibrary.data.migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Fullname")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
@@ -154,6 +154,22 @@ namespace Tc.ServerLibrary.data.migrations
                     b.ToTable("GeneralDepartments");
                 });
 
+            modelBuilder.Entity("Tc.BaseLibrary.Entities.SystemRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemRoles");
+                });
+
             modelBuilder.Entity("Tc.BaseLibrary.Entities.Town", b =>
                 {
                     b.Property<int>("Id")
@@ -168,6 +184,25 @@ namespace Tc.ServerLibrary.data.migrations
                     b.HasKey("Id");
 
                     b.ToTable("Towns");
+                });
+
+            modelBuilder.Entity("Tc.BaseLibrary.Entities.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Tc.BaseLibrary.Entities.Employee", b =>
