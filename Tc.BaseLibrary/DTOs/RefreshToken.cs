@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Tc.BaseLibrary.DTOs
 {
-    public class Login
+    public class RefreshToken
     {
-        public string? Email { get; set; }
-        public string? Password { get; set; }
+        public string? Token { get; set; }
     }
 }

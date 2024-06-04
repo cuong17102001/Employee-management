@@ -16,6 +16,7 @@ namespace Tc.ServerLibrary.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<SystemRole> SystemRoles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<RefreshTokenInfo> RefreshTokenInfos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
